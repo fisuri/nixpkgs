@@ -5,38 +5,39 @@
   buildLinux,
   variant,
   ...
-}@args:
-
-let
+} @ args: let
   # comments with variant added for update script
   variants = {
     # ./update-zen.py zen
     zen = {
-      version = "6.12.2"; # zen
+      version = "6.12.6"; # zen
       suffix = "zen1"; # zen
-      sha256 = "0a6anmfm6495j6lwlywr62ghpwdvbdn54bl5baya5jz7vfqc1ghj"; # zen
+      sha256 = "0l81c0d7y3rs2a389gmsapd1j5llqvjhjsw67704ac7y83kprzn3"; # zen
       isLqx = false;
     };
     # ./update-zen.py lqx
     lqx = {
-      version = "6.12.2"; # lqx
+      version = "6.12.6"; # lqx
       suffix = "lqx3"; # lqx
-      sha256 = "18ibc0dz70vxb61mzdhbhbjg0kfxgcsrl3zdki0cqlhcvfxwk19h"; # lqx
+      sha256 = "1li86ifk3q3144mdq342jgli4a4bf0aviw7y0rryzz0klm9j13ci"; # lqx
       isLqx = true;
     };
   };
-  zenKernelsFor =
-    {
-      version,
-      suffix,
-      sha256,
-      isLqx,
-    }:
+  zenKernelsFor = {
+    version,
+    suffix,
+    sha256,
+    isLqx,
+  }:
     buildLinux (
       args
       // {
         inherit version;
-        pname = "linux-${if isLqx then "lqx" else "zen"}";
+        pname = "linux-${
+          if isLqx
+          then "lqx"
+          else "zen"
+        }";
         modDirVersion = lib.versions.pad 3 "${version}-${suffix}";
         isZen = true;
 
@@ -54,8 +55,7 @@ let
         # The list below is not exhaustive, so the kernels probably doesn't match
         # the upstream, but should bring most of the improvements that will be
         # expected by users
-        structuredExtraConfig =
-          with lib.kernel;
+        structuredExtraConfig = with lib.kernel;
           {
             # Zen Interactive tuning
             ZEN_INTERACTIVE = yes;
@@ -100,9 +100,8 @@ let
             # Preemptive Full Tickless Kernel at 1000Hz
             HZ = freeform "1000";
             HZ_1000 = yes;
-
           }
-          // lib.optionalAttrs (isLqx) {
+          // lib.optionalAttrs isLqx {
             # Google's BBRv3 TCP congestion Control
             TCP_CONG_BBR = yes;
             DEFAULT_BBR = yes;
@@ -132,7 +131,11 @@ let
 
         passthru.updateScript = [
           ./update-zen.py
-          (if isLqx then "lqx" else "zen")
+          (
+            if isLqx
+            then "lqx"
+            else "zen"
+          )
         ];
 
         extraMeta = {
@@ -146,9 +149,8 @@ let
             + lib.optionalString isLqx " (Same as linux_zen, but less aggressive release schedule and additional extra config)";
           broken = stdenv.hostPlatform.isAarch64;
         };
-
       }
-      // (args.argsOverride or { })
+      // (args.argsOverride or {})
     );
 in
-zenKernelsFor variants.${variant}
+  zenKernelsFor variants.${variant}
