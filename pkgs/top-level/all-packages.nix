@@ -1495,7 +1495,7 @@ with pkgs;
   ### APPLICATIONS/FILE-MANAGERS
 
   doublecmd = callPackage ../by-name/do/doublecmd/package.nix {
-    inherit (qt5) wrapQtAppsHook;
+    inherit (libsForQt5) libqtpas wrapQtAppsHook;
   };
 
   krusader = libsForQt5.callPackage ../applications/file-managers/krusader { };
@@ -3582,7 +3582,7 @@ with pkgs;
   gdown = with python3Packages; toPythonApplication gdown;
 
   goverlay = callPackage ../tools/graphics/goverlay {
-    inherit (qt5) wrapQtAppsHook;
+    inherit (libsForQt5) libqtpas wrapQtAppsHook;
     inherit (plasma5Packages) breeze-qt5;
   };
 
@@ -4841,7 +4841,7 @@ with pkgs;
 
   pleroma = callPackage ../servers/pleroma {
     elixir = elixir_1_17;
-    beamPackages = beamPackages.extend (self: super: { elixir = elixir_1_17; });
+    beamPackages = beam.packages.erlang_26.extend (self: super: { elixir = elixir_1_17; });
   };
 
   plfit = callPackage ../by-name/pl/plfit/package.nix {
@@ -6525,7 +6525,12 @@ with pkgs;
     fpc = fpc;
   };
 
-  lazarus-qt = libsForQt5.callPackage ../development/compilers/fpc/lazarus.nix {
+  lazarus-qt5 = libsForQt5.callPackage ../development/compilers/fpc/lazarus.nix {
+    fpc = fpc;
+    withQt = true;
+  };
+
+  lazarus-qt6 = qt6Packages.callPackage ../development/compilers/fpc/lazarus.nix {
     fpc = fpc;
     withQt = true;
   };
@@ -7181,10 +7186,13 @@ with pkgs;
   erlang_nox = beam_nox.interpreters.erlang;
 
   inherit (beam.packages.erlang)
-    ex_doc erlang-ls erlfmt elvis-erlang
+    ex_doc erlfmt elvis-erlang
     rebar rebar3 rebar3WithPlugins
     fetchHex
     lfe lfe_2_1;
+
+  inherit (beam.packages.erlang_26) erlang-ls;
+
   beamPackages = beam.packages.erlang // { __attrsFailEvaluation = true; };
 
   erlang_language_platform = callPackage ../by-name/er/erlang-language-platform/package.nix { };
@@ -9911,8 +9919,6 @@ with pkgs;
   libpwquality = callPackage ../development/libraries/libpwquality {
     python = python3;
   };
-
-  libqt5pas = libsForQt5.callPackage ../development/compilers/fpc/libqt5pas.nix { };
 
   librsvg = callPackage ../development/libraries/librsvg {
     inherit (darwin) libobjc;
@@ -16755,8 +16761,6 @@ with pkgs;
     openjfx = openjfx21;
   };
 
-  manaplus = callPackage ../games/manaplus { stdenv = gcc11Stdenv; };
-
   mindustry-wayland = callPackage ../by-name/mi/mindustry/package.nix {
     enableWayland = true;
   };
@@ -18763,5 +18767,13 @@ with pkgs;
 
   clash-verge-rev = callPackage ../by-name/cl/clash-verge-rev/package.nix {
     libsoup = libsoup_3;
+  };
+
+  ejabberd = callPackage ../by-name/ej/ejabberd/package.nix {
+    erlang = erlang_26;
+  };
+
+  wings = callPackage ../by-name/wi/wings/package.nix {
+    erlang = erlang_25;
   };
 }

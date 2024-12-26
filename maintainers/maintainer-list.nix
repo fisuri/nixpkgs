@@ -9734,6 +9734,12 @@
     githubId = 36667224;
     name = "Yingchi Long";
   };
+  IncredibleLaser = {
+    github = "IncredibleLaser";
+    githubId = 45564436;
+    matrix = "@incrediblelaser:tchncs.de";
+    name = "Gereon Schomber";
+  };
   indexyz = {
     email = "indexyz@pm.me";
     github = "5aaee9";
@@ -18724,6 +18730,7 @@
   };
   rapiteanu = {
     email = "rapiteanu.catalin@gmail.com";
+    matrix = "@catalin:one.ems.host";
     github = "Steinhagen";
     githubId = 4029937;
     name = "Viorel-Cătălin Răpițeanu";
